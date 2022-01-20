@@ -1,0 +1,72 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    background: #FFFFFF !important;
+    min-height: 100vh;
+    display: flex;
+    font-weight: 400;
+  }
+  
+  body,
+  html,
+  .vue-template,
+  .vertical-center,
+  .back-init,
+  .box-init {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+
+  .vertical-center {
+    text-align: center;
+  }
+
+  .btn-w {
+      min-width: 260px !important;
+  }
+
+  .back-init {    
+    height: 100%;
+    background-image: linear-gradient(180deg, #ffffff 50%, #363A44 50%);
+  }
+
+  .box-init {    
+    width: 100%;
+    height: 200px;
+    border: none;
+    -webkit-border-radius: 47% / 50%;
+    border-radius: 47% / 50%;    
+    background: #ffffff;
+    top: calc(50% - 100px);
+  }
+
+  .buttons-init {
+    margin-top: 50%;
+  }
+  .vertical-center img {
+    text-align: center;
+    margin: 0;
+    line-height: 1;
+    padding-top: 40px;
+  }
+  
+  label {
+    font-weight: 500;
+  }
+  
+  .forgot-password,
+  .forgot-password a {
+    text-align: right;
+    font-size: 13px;
+    padding-top: 10px;
+    color: #7a7a7a;
+    margin: 0;
+  }
+  
+  .forgot-password a {
+    color: #2554FF;
+  }
+  
