@@ -71,22 +71,15 @@ export default {
     },
     methods: {
        logar() {
-           if (this.login.login.trim() == '') {
-               alert('Celular deve ser informado');
-               return;
-           } 
-
-           if (this.login.senha.trim() == '') {
-               alert('Senha deve ser informada');
-               return;
-           } 
-
            axios
             .post("http://192.168.15.200:8765/usuarios/login", this.login)
             .then((res) => {
-                    console.log(res.data)
+                sessionStorage.setItem("usuario", JSON.stringify(res.data));
+                this.$store.commit('updateUsuario', JSON.parse(sessionStorage.getItem("usuario")));
+                this.$router.push({path: '/home'});
             })
             .catch((error) => {
+                console.log(error.response.data)
                 if( error.response ){
                     alert(error.response.data.msg); 
                 } else {
