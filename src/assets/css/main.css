@@ -20,6 +20,11 @@
     position: absolute;
   }
 
+  a {
+    color: #363A44;
+    text-decoration: none;
+  }
+
   .vertical-center {
     text-align: center;
   }
@@ -43,7 +48,8 @@
     top: calc(50% - 100px);
   }
 
-  .buttons-init {
+  .buttons-init,
+  .buttons-app {
     margin-top: 50%;
   }
   .vertical-center img {
@@ -56,17 +62,9 @@
   label {
     font-weight: 500;
   }
-  
-  .forgot-password,
-  .forgot-password a {
-    text-align: right;
-    font-size: 13px;
-    padding-top: 10px;
-    color: #7a7a7a;
-    margin: 0;
+
+  .container-init form {
+      text-align: left !important;
   }
-  
-  .forgot-password a {
-    color: #2554FF;
-  }
-  
+
+ 

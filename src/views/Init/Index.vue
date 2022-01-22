@@ -21,7 +21,7 @@
                 <div class="btn-group pt-2">
                     <button @click="login('ROLE_PAIS_RESPONSAVEIS')" type="button" class="btn btn-light btn-lg btn-w">PAIS OU RESPONSÁVEL</button>
                 </div>
-                 <div class="btn-group pt-2">
+                <div class="btn-group pt-2">
                     <button @click="login('ROLE_PARCEIROS')" type="button" class="btn btn-outline-light btn-lg btn-w">PARCEIRO</button>
                 </div>
             </div>

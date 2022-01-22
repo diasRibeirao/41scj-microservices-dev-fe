@@ -5,11 +5,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    tipoUsuario: ''
+    tipoUsuario: '',
+    usuario: []
   },
   mutations: {
     updateTipoUsuario(state, value) {
       state.tipoUsuario = value;
+    },
+    updateUsuario(state, value) {
+      state.usuario = value;
     }
   },
   actions: {

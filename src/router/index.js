@@ -17,7 +17,32 @@ const routes = [
   {
     path: '/forgot-password',
     name: 'forgot-password',
-    component: () => import('../views/Init/ForgotPassword.vue')
+    component: () => import('../views/Account/ForgotPassword.vue')
+  },
+  {
+    path: '/confirm-forgot-password',
+    name: 'confirm-forgot-password',
+    component: () => import('../views/Account/ConfirmForgotPassword.vue')
+  },
+  {
+    path: '/redefine-password',
+    name: 'redefine-password',
+    component: () => import('../views/Account/RedefinePassword.vue')
+  },  
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('../views/Register/Register.vue')
+  },
+  {
+    path: '/confirm-register',
+    name: 'confirm-register',
+    component: () => import('../views/Register/ConfirmRegister.vue')
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: () => import('../views/Home/Home.vue')
   }
 ]
 
