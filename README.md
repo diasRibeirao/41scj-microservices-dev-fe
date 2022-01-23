@@ -1,24 +1,28 @@
-# 41scj-microservices-dev-fe
+# INFORMAÇÕES DO TRABALHO 
+<br />
 
-## Project setup
-```
-npm install
-```
+## TURMA / DISCIPLINA / PROFESSOR
+### 41SCJ / MICROSERVICES DEVELOPMENT / ANDRE PONTES SAMPAIO
+<br />
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## TIPO AVALIAÇÃO
+### Avaliação Parcial da Disciplina
+<br />
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## TÍTULO
+#### 41 SCJ - MICROSERVICES DEV - TRABALHO 2Cancel changes
+<br />
 
-### Lints and fixes files
-```
-npm run lint
-```
+## ALUNOS 
+#### Emerson Dias - 341060  
+#### Marco Antonio - 341785
+<br />
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### SOBRE O SISTEMA 
+##### Desenvolvimento de um aplicativo para acompanhar o deslocamento em tempo real do filho, da residência para escola e da escola para a residência através do transporte escolar
+<br />
+
+
+
+
+
