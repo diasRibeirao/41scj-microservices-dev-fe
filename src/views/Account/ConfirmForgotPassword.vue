@@ -82,10 +82,7 @@ export default {
       onSubmit() {
         this.$loading(true);
         
-        /*voltar para esta chamada: 
         api.post("/usuarios/ativar", this.form)
-        */
-        api.get("/usuarios/1")
           .then((response) => {
             this.$store.dispatch("SET_USUARIO", response.data);       
             this.$router.push({path: '/redefine-password'});

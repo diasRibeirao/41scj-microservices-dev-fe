@@ -74,9 +74,7 @@ export default {
       onSubmit() {
         this.$loading(true);
 
-        /*voltar para esta chamada: 
-        api.post("/usuarios/esqueceu-senha", this.form)*/
-        api.get("/usuarios/1")
+        api.post("/usuarios/esqueceu-senha", this.form)
           .then((response) => {
             this.$store.dispatch("SET_USUARIO", response.data);       
             this.$router.push({path: '/confirm-forgot-password'});

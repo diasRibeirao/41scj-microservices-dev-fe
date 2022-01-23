@@ -4,10 +4,6 @@
       <Header titulo="VanCerta" sair="true" /> 
 
       <div class="container pt-3">
-          <h3>{{nomeCompleto()}}</h3>
-
-
-
           <section class="gradient-custom">
             <div v-for="menu in menus" :key="menu.id">
 

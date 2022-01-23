@@ -174,8 +174,7 @@ export default {
       onSubmit() {
         this.$loading(true);
  
-        /*api.post("/usuarios", this.form)*/
-        api.get("/usuarios/2") 
+        api.post("/usuarios", this.form)
           .then((response) => {
             this.$store.dispatch("SET_USUARIO", response.data);       
             this.$router.push({path: '/confirm-register'});
