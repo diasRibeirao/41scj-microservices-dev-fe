@@ -1,57 +1,147 @@
-<template>
-  <div class="vue-template">  
-    <Header titulo="Criar conta" retorno="/login" />
+ <template>
+  <div class="wrap">  
+    <div class="app-container">
+       <Header titulo="Criar conta" retorno="/login" />
 
-    <div class="container container-init pt-3 px-4">
-      <h3>{{tipoUsuario()}}</h3>
-      <form>
-          <div class="form-group">
-              <label>Nome</label>
-              <input type="text" id="nome" name="nome" v-model="cadastro.nome" class="form-control" required />
-          </div>
+      <div class="container pt-3 px-5">
+          <h3>{{tipoUsuario()}}</h3>
+            <div class="form-group text-center pt-2">
+              <validation-observer ref="formValidator" v-slot="{ handleSubmit }">
+                <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
 
-          <div class="form-group">
-              <label>Sobrenome</label>
-              <input type="text" id="sobrenome" name="sobrenome" v-model="cadastro.sobrenome" class="form-control" required />
-          </div>
-          
-          <div class="form-group">
-              <label>E-mail</label>
-              <input type="text" id="email" name="email" v-model="cadastro.email" class="form-control" required />
-          </div>
+                  <validation-provider
+                      name="nome"
+                      :rules="{ required: true, min: 3, max: 120 }"
+                      v-slot="validationContext">
 
-          <div class="form-group">
-              <label>Celular</label>
-              <input type="text" id="telefone" name="telefone" v-model="cadastro.telefone" class="form-control" required />
-          </div>
+                      <b-form-group id="nome-input-group" label="Nome" label-for="nome-input">
+                          <b-form-input
+                          id="nome-input"
+                          name="nome-input"
+                          v-model="form.nome"
+                          :state="getValidationState(validationContext)"
+                          aria-describedby="input-nome-feedback"
+                          ></b-form-input>
 
-          <div class="form-group">
-              <label>Senha</label>
-              <input type="text" id="senha" name="senha" v-model="cadastro.senha" class="form-control" required />
-          </div>
+                          <b-form-invalid-feedback id="input-nome-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                      </b-form-group>
+                  </validation-provider>
 
-          <div class="form-group">
-              <label>Confirmar Senha</label>
-              <input type="text" id="confirmarSenha" name="confirmarSenha" v-model="cadastro.confirmarSenha" class="form-control" required />
-          </div>    
+                  <validation-provider
+                      name="sobrenome"
+                      :rules="{ required: true, min: 3, max: 120 }"
+                      v-slot="validationContext">
 
-          <div class="text-center pt-4">
-            <button type="button" @click.prevent="cadastar" class="btn btn-dark btn-lg btn-w">SALVAR</button>
-          </div>
-          
-      </form>
+                      <b-form-group id="sobrenome-input-group" label="Sobrenome" label-for="sobrenome-input">
+                          <b-form-input
+                          id="sobrenome-input"
+                          name="sobrenome-input"
+                          v-model="form.sobrenome"
+                          :state="getValidationState(validationContext)"
+                          aria-describedby="input-sobrenome-feedback"
+                          ></b-form-input>
+
+                          <b-form-invalid-feedback id="input-sobrenome-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                      </b-form-group>
+                  </validation-provider>
+
+                  <validation-provider
+                      name="e-mail"
+                      :rules="{ required: true,  max: 220 }"
+                      vid="email"
+                      v-slot="validationContext">
+
+                      <b-form-group id="email-input-group" label="E-mail" label-for="email-input">
+                          <b-form-input
+                          id="email-input"
+                          name="email-input"
+                          v-model="form.email"
+                          :state="getValidationState(validationContext)"
+                          aria-describedby="input-email-feedback"
+                          ></b-form-input>
+
+                          <b-form-invalid-feedback id="input-email-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                      </b-form-group>
+                  </validation-provider>
+
+                  <validation-provider
+                      name="celular"
+                      :rules="{ required: true, min: 10, max: 11 }"
+                      vid="telefone"
+                      v-slot="validationContext">
+
+                      <b-form-group id="telefone-input-group" label="Celular" label-for="telefone-input">
+                          <b-form-input
+                          id="telefone-input"
+                          name="telefone-input"
+                          v-model="form.telefone"
+                          :state="getValidationState(validationContext)"
+                          aria-describedby="input-telefone-feedback"
+                          ></b-form-input>
+
+                          <b-form-invalid-feedback id="input-telefone-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                      </b-form-group>
+                  </validation-provider>
+
+                  <validation-provider 
+                    name="senha" 
+                    :rules="{ required: true, min:6 }" 
+                    v-slot="validationContext">
+
+                    <b-form-group id="senha-input-group" label="Senha" label-for="senha-input">
+                        <b-form-input
+                        type="password"
+                        id="senha-input"
+                        name="senha-input"
+                        v-model="form.senha"
+                        :state="getValidationState(validationContext)"
+                        aria-describedby="input-senha-feedback"
+                        ></b-form-input>
+
+                        <b-form-invalid-feedback id="input-senha-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                    </b-form-group>
+                  </validation-provider>
+
+                  <validation-provider 
+                      name="confirmar senha" 
+                      :rules="{ required: true, min:6 }" 
+                      vid="confirmarSenha"
+                      v-slot="validationContext">
+                    <b-form-group id="senha-input-group" label="Confirmar Senha" label-for="confirmar-senha-input">
+                        <b-form-input
+                        type="password"
+                        id="confirmar-senha-input"
+                        name="confirmar-senha-input"
+                        v-model="form.confirmarSenha"
+                        :state="getValidationState(validationContext)"
+                        aria-describedby="input-confirmar-senha-feedback"
+                        ></b-form-input>
+
+                        <b-form-invalid-feedback id="input-confirmar-senha-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                    </b-form-group>
+                  </validation-provider>
+
+                  <b-form-group class="pt-3">
+                      <b-button type="submit" variant="btn btn-dark btn-lg btn-w">SALVAR</b-button>
+                  </b-form-group>
+                </b-form>    
+              </validation-observer>
+            </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import { mapState } from "vuex";
+import '@/assets/css/main.css'
 import Header from '@/components/Header/Header.vue'
+import { api } from "@/services.js";
 
 export default {
     data() {
         return {
-          cadastro: {
+          form: {
             nome: '',
             sobrenome: '',
             email: '',
@@ -65,77 +155,98 @@ export default {
     components: {
         Header 
     },
-    methods: {
+     computed: {
+      ...mapState(["role"])
+    },
+    methods: {     
       tipoUsuario() {
-        if (this.$store.state.tipoUsuario == 'ROLE_PARCEIROS') {
+        if (this.role == 'ROLE_PARCEIROS') {
             return 'PARCEIROS'
-        } else if (this.$store.state.tipoUsuario == 'ROLE_PAIS_RESPONSAVEIS') {
+        } else if (this.role == 'ROLE_PAIS_RESPONSAVEIS') {
             return 'PAIS OU RESPONSÁVEL'
         } else {
             this.$router.push({path: '/'});
         }
       },
-      cadastar() {
-        /*axios
-          .post("http://192.168.15.200:8765/usuarios", this.cadastro)
-          .then((res) => {
-              console.log(res.data)
+      getValidationState({ dirty, validated, valid = null }) {
+        return dirty || validated ? valid : null;
+      },
+      onSubmit() {
+        this.$loading(true);
+ 
+        /*api.post("/usuarios", this.form)*/
+        api.get("/usuarios/2") 
+          .then((response) => {
+            this.$store.dispatch("SET_USUARIO", response.data);       
+            this.$router.push({path: '/confirm-register'});
           })
           .catch((error) => {
-              if( error.response ){
-                console.log(error.response.data)
-                  alert(error.response.data.msg); 
-              } else {
-                  alert('Ocorreu um erro inesperado. Tente novamente mais tarde'); 
+              let msg = 'Ocorreu um erro inesperado. Tente novamente mais tarde';
+              if(error.response){
+                  msg = error.response.data.msg;
               }
-          });*/
-          // depois no sucesso fará a chamada
-          this.dadosUsuario('http://192.168.15.200:8765/usuarios/1');
+
+              if (Array.isArray(error.response.data.errors) && error.response.data.errors.length) {
+                error.response.data.errors.map((obj) => {
+                  this.setErrors(obj.fieldName, obj.message);
+                });
+              }
+              this.$fire({
+                  text: msg,
+                  type: "error",
+              }).then(() => this.$loading(false));
+          });
+          
       },
-      dadosUsuario(url) {
-        axios
-        .get(url)
-        .then((res) => {console.log(res.data)
-          sessionStorage.setItem("usuario", JSON.stringify(res.data));
-          this.$store.commit('updateUsuario', JSON.parse(sessionStorage.getItem("usuario")));
-          this.$router.push({path: '/confirm-register'});
-        })
-        .catch((error) => {
-            if( error.response ){
-                alert(error.response.data.msg); 
-            } else {
-                alert('Ocorreu um erro inesperado. Tente novamente mais tarde'); 
-            }
-        });
+      setErrors(_name, message) {
+        switch (_name) {
+          case 'nome':
+            this.$refs.formValidator.setErrors({nome : [message]});
+            break;
+          case 'sobrenome':
+            this.$refs.formValidator.setErrors({sobrenome : [message]});
+            break;
+          case 'email':
+            this.$refs.formValidator.setErrors({email : [message]});
+            break;
+          case 'telefone':
+            this.$refs.formValidator.setErrors({telefone : [message]});
+            break;
+          case 'senha':
+            this.$refs.formValidator.setErrors({senha : [message]});
+            break;
+          case 'confirmarSenha':
+            this.$refs.formValidator.setErrors({confirmarSenha : [message]});
+            break;
+          default:
+            console.log(`Atributo não reconhecido: ${_name}.`);
+        }
       }
     },
-    created(){ 
-      if (this.$store.state.tipoUsuario != '') {
-        sessionStorage.setItem("tipoUsuario", this.$store.state.tipoUsuario);
-      }
+    created(){       
+       this.$store.dispatch("SET_ROLE", window.localStorage.role);
 
-      if (sessionStorage.getItem("tipoUsuario") == null) {
-        this.$router.push({path: '/'});
-      } else {
-        this.$store.commit('updateTipoUsuario', sessionStorage.getItem("tipoUsuario"));
-      }
+       this.form.roles = [];
 
-      this.cadastro.roles = [];
+        api.get("usuarios/roles/nome/" + this.role)
+          .then((response) => {
+            this.form.roles.push(response.data);
+          })
+          .catch((error) => {
+              let msg = 'Ocorreu um erro inesperado. Tente novamente mais tarde';
+              if(error.response){
+                  msg = error.response.data.msg;
+              }
 
-      axios
-        .get("http://192.168.15.200:8765/usuarios/roles/nome/" + this.$store.state.tipoUsuario)
-        .then((res) => {
-          this.cadastro.roles.push(res.data);
-        })
-        .catch((error) => {
-            if( error.response ){
-                alert(error.response.data.msg); 
-            } else {
-                alert('Ocorreu um erro inesperado. Tente novamente mais tarde'); 
-            }
-        });
+              this.$fire({
+                  text: msg,
+                  type: "error",
+              }).then(() => this.$loading(false));
+          });
 
-          
+    },
+    mounted() {
+        this.$loading(false);
     }
 }
 </script>

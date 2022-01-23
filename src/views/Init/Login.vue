@@ -1,98 +1,137 @@
 <template>
-    <div class="back-init">
-        <div class="box-init"></div>
- 
-        <div class="vue-template">
-            <div class="form-group">
+    <div class="wrap-init">  
+        <div class="init-background"></div>
+        <div class="init-container">
+            <div class="form-group text-center pt-4">
                 <Logo />
             </div>
-            <h3>{{tipoUsuario}}</h3>
+            <h4>{{tipoUsuario()}}</h4>
+            <div class="form-group text-center pt-2">
+                <div class="container pt-3 px-5">
+                    <validation-observer ref="observer" v-slot="{ handleSubmit }">
+                        <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
 
-            <div class="container container-init pt-3 px-5">
-                <form>
-                    <div class="form-group">
-                        <label>Celular (DD + Número)</label>
-                        <input type="tel" id="login" name="login" v-model="login.login" class="form-control" required />
-                    </div>
+                            <validation-provider
+                                name="Celular"
+                                :rules="{ required: true, min: 10, max: 11 }"
+                                v-slot="validationContext">
 
-                    <div class="form-group">
-                        <label>Senha</label>
-                        <input type="password" id="senha" name="senha" v-model="login.senha" class="form-control" required />
-                    </div>
+                                <b-form-group id="login-input-group" label="Celular (DD + Número)" label-for="login-input">
+                                    <b-form-input
+                                    id="login-input"
+                                    name="login-input"
+                                    v-model="form.login"
+                                    :state="getValidationState(validationContext)"
+                                    aria-describedby="input-login-feedback"
+                                    ></b-form-input>
 
-                    <div class="text-center pt-4">
-                        <button type="button" @click.prevent="logar" class="btn btn-dark btn-lg btn-w">LOGIN</button>
-                    </div>
+                                    <b-form-invalid-feedback id="input-login-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                                </b-form-group>
+                            </validation-provider>
 
-                    <p class="forgot-password text-center mt-2 mb-4">
-                        <router-link to="/forgot-password">Esqueceu a Senha <span class="bi bi-file-lock2"></span>?</router-link>
-                    </p>
-                </form>
-            </div>
+                             <validation-provider name="Senha" :rules="{ required: true }" v-slot="validationContext">
+                                <b-form-group id="senha-input-group" label="Senha" label-for="senha-input">
+                                    <b-form-input
+                                    type="password"
+                                    id="senha-input"
+                                    name="senha-input"
+                                    v-model="form.senha"
+                                    :state="getValidationState(validationContext)"
+                                    aria-describedby="input-senha-feedback"
+                                    ></b-form-input>
 
-            <div class="buttons-init">                
-                 <div class="btn-group pt-2">
-                    <button @click="register" type="button" class="btn btn-outline-light btn-lg btn-w">CRIAR CONTA</button>
+                                    <b-form-invalid-feedback id="input-senha-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                                </b-form-group>
+                            </validation-provider>
+
+                                <b-form-group class="pt-3">
+                                    <b-button type="submit" variant="btn btn-dark btn-lg btn-w">Entrar</b-button>
+                                </b-form-group>
+                                <b-form-group class="pt-2">
+                                    <router-link to="/forgot-password">Esqueci a Senha <span class="bi bi-file-lock2"></span></router-link>
+                                </b-form-group>
+                        </b-form>    
+                    </validation-observer>
                 </div>
             </div>
+            <div class="form-group init-buttons">
+                
+                <b-form-group class="text-center pt-2">
+                    <b-button @click="cadastrar" class="btn btn-outline-light btn-lg btn-w">CRIAR CONTA</b-button>
+                </b-form-group>
+                 
+            </div>
         </div>
-
-        
     </div>
 </template>
 
 <script>
-import axios from "axios";
+import { mapState } from "vuex";
+import '@/assets/css/init.css'
 import Logo from '@/components/Init/Logo.vue'
-import 'bootstrap-icons/font/bootstrap-icons.css'
 
 export default {
+    name: 'Login',
     data() {
         return {
-            tipoUsuario: '',
-            login: {
-                login: "",
-                senha: "",
-                role: this.$store.state.tipoUsuario
+            form: {
+                login: '',
+                senha: '',
+                role: ''
             }
         }
     },
     components: {
         Logo 
     },
-    created(){
-        if (this.$store.state.tipoUsuario == 'ROLE_PARCEIROS') {
-            this.tipoUsuario = 'PARCEIROS'
-        } else if (this.$store.state.tipoUsuario == 'ROLE_PAIS_RESPONSAVEIS') {
-            this.tipoUsuario = 'PAIS OU RESPONSÁVEL'
-        } else {
-            this.$router.push({path: '/'});
-        }
+    computed: {
+      ...mapState(["role"])
     },
     methods: {
-       logar() {
-           axios
-            .post("http://192.168.15.200:8765/usuarios/login", this.login)
-            .then((res) => {
-                sessionStorage.setItem("usuario", JSON.stringify(res.data));
-                this.$store.commit('updateUsuario', JSON.parse(sessionStorage.getItem("usuario")));
-                this.$router.push({path: '/home'});
+        tipoUsuario() {
+            if (this.role == 'ROLE_PARCEIROS') {
+                return 'PARCEIROS'
+            } else if (this.role == 'ROLE_PAIS_RESPONSAVEIS') {
+                return 'PAIS OU RESPONSÁVEL'
+            } else {
+                this.$router.push({path: '/'});
+            }
+        },
+        getValidationState({ dirty, validated, valid = null }) {
+            return dirty || validated ? valid : null;
+        },
+        onSubmit() {
+            this.$loading(true);
+            
+            this.$store.dispatch("LOGAR_USUARIO", this.form)
+            .then(response => {
+               this.$store.dispatch("SET_USUARIO", response.data);       
+               this.$router.push({name: 'home'});
             })
             .catch((error) => {
-                console.log(error.response.data)
-                if( error.response ){
-                    alert(error.response.data.msg); 
-                } else {
-                    alert('Ocorreu um erro inesperado. Tente novamente mais tarde'); 
+                let msg = 'Ocorreu um erro inesperado. Tente novamente mais tarde';
+                if(error.response){
+                    msg = error.response.data.msg;
                 }
+
+                this.$fire({
+                    text: msg,
+                    type: "error",
+                }).then(() => this.$loading(false));
             });
-       },
-       register: function() {
+        },
+        cadastrar: function() {
             this.$router.push({
                 path: '/register'
             });
             
         }
+    },
+    created() {
+        this.form.role = this.role;
+    },
+    mounted() {
+        this.$loading(false);
     }
 }
 </script>

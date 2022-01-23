@@ -1,34 +1,53 @@
 <template>
-  <div class="vue-template">  
-    <Header titulo="Esqueci a senha" retorno="/login" />
+  <div class="wrap">  
+    <div class="app-container">
+      <Header titulo="Esqueci a senha" retorno="/login" />
 
-    <div class="container container-init pt-3 px-5">
-      <h3>{{tipoUsuario()}}</h3>
-      <form>
-          <div class="form-group">
-              <label>Celular (DD + Número)</label>
-              <input type="text" id="telefone" name="telefone" v-model="esqueci.telefone" class="form-control" required />
-          </div>
-           
-          <div class="text-center pt-4">
-            <div class="d-grid gap-2">
-              <button type="button" @click.prevent="enviar" class="btn btn-dark btn-lg btn-w">Enviar</button>
+      <div class="container pt-3 px-5">
+          <h3>{{tipoUsuario()}}</h3>
+            <div class="form-group text-center pt-2">
+              <validation-observer ref="observer" v-slot="{ handleSubmit }">
+                <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
+
+                  <validation-provider
+                      name="Celular"
+                      :rules="{ required: true, min: 10, max: 11 }"
+                      v-slot="validationContext">
+
+                      <b-form-group id="telefone-input-group" label="Celular (DD + Número)" label-for="telefone-input">
+                          <b-form-input
+                          id="telefone-input"
+                          name="telefone-input"
+                          v-model="form.telefone"
+                          :state="getValidationState(validationContext)"
+                          aria-describedby="input-telefone-feedback"
+                          ></b-form-input>
+
+                          <b-form-invalid-feedback id="input-telefone-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                      </b-form-group>
+                  </validation-provider>
+
+                  <b-form-group class="pt-3">
+                      <b-button type="submit" variant="btn btn-dark btn-lg btn-w">ENVIAR</b-button>
+                  </b-form-group>
+                </b-form>    
+              </validation-observer>
             </div>
-          </div>
-          
-      </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import { mapState } from "vuex";
+import '@/assets/css/main.css'
 import Header from '@/components/Header/Header.vue'
+import { api } from "@/services.js";
 
 export default {
     data() {
         return {
-          esqueci: {
+          form: {
             telefone: ''
           }
         }
@@ -36,53 +55,51 @@ export default {
     components: {
         Header 
     },
+     computed: {
+      ...mapState(["role"])
+    },
     methods: {     
       tipoUsuario() {
-        if (sessionStorage.getItem("tipoUsuario") == 'ROLE_PARCEIROS') {
+        if (this.role == 'ROLE_PARCEIROS') {
             return 'PARCEIROS'
-        } else if (sessionStorage.getItem("tipoUsuario") == 'ROLE_PAIS_RESPONSAVEIS') {
+        } else if (this.role == 'ROLE_PAIS_RESPONSAVEIS') {
             return 'PAIS OU RESPONSÁVEL'
         } else {
             this.$router.push({path: '/'});
         }
       },
-      enviar() {
-        /*axios
-        .post("http://192.168.15.200:8765/usuarios/esqueceu-senha", this.esqueci)
-        .then((res) => {
-          console.log(res.data);
-          sessionStorage.setItem("usuario", JSON.stringify(res.data));
-          this.$store.commit('updateUsuario', JSON.parse(sessionStorage.getItem("usuario")));
-          this.$router.push({path: '/confirm-forgot-password'});
-        })
-        .catch((error) => {
-            console.log(error.response.data)
-            if( error.response ){
-                alert(error.response.data.msg); 
-            } else {
-                alert('Ocorreu um erro inesperado. Tente novamente mais tarde'); 
-            }
-        });*/
-
-        // depois no sucesso fará a chamada
-          this.dadosUsuario('http://192.168.15.200:8765/usuarios/1');
+      getValidationState({ dirty, validated, valid = null }) {
+        return dirty || validated ? valid : null;
       },
-      dadosUsuario(url) { // depois apagar este, deixar só com a responsa de quando consome "esqueceu senha"
-        axios
-        .get(url)
-        .then((res) => {console.log(res.data)
-          sessionStorage.setItem("usuario", JSON.stringify(res.data));
-          this.$store.commit('updateUsuario', JSON.parse(sessionStorage.getItem("usuario")));
-          this.$router.push({path: '/confirm-forgot-password'});
-        })
-        .catch((error) => {
-            if( error.response ){
-                alert(error.response.data.msg); 
-            } else {
-                alert('Ocorreu um erro inesperado. Tente novamente mais tarde'); 
-            }
-        });
+      onSubmit() {
+        this.$loading(true);
+
+        /*voltar para esta chamada: 
+        api.post("/usuarios/esqueceu-senha", this.form)*/
+        api.get("/usuarios/1")
+          .then((response) => {
+            this.$store.dispatch("SET_USUARIO", response.data);       
+            this.$router.push({path: '/confirm-forgot-password'});
+          })
+          .catch((error) => {
+              let msg = 'Ocorreu um erro inesperado. Tente novamente mais tarde';
+              if(error.response){
+                  msg = error.response.data.msg;
+              }
+
+              this.$fire({
+                  text: msg,
+                  type: "error",
+              }).then(() => this.$loading(false));
+          });
+          
       }
+    },
+    created(){ 
+       this.$store.dispatch("SET_ROLE", window.localStorage.role);
+    },
+    mounted() {
+        this.$loading(false);
     }
 }
 </script>

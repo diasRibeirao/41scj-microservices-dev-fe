@@ -1,38 +1,59 @@
 <template>
-  <div class="vue-template">  
-    <Header titulo="Confirmar conta" retorno="/register" />
+  <div class="wrap">  
+    <div class="app-container">
+      <Header titulo="Confirmar conta" retorno="/register" />
 
-    <div class="container container-init pt-3 px-5">
-      <h3>{{tipoUsuario()}}</h3>
-      <p>
-        Por favor, informe o código de 4 digitos enviado para número de celular {{confirmar.telefone}}
-      </p>
-      <form>
-          <div class="form-group">
-              <label>Código</label>
-              <input type="text" id="codigo" name="codigo" v-model="confirmar.codigo" class="form-control" required />
-          </div>
-           
-          <div class="text-center pt-4">
-            <div class="d-grid gap-2">
-              <button type="button" @click.prevent="ativar" class="btn btn-dark btn-lg btn-w">CONFIRMAR</button>
-              <button type="button" @click.prevent="reenviar" class="btn btn-outline-secondary btn-lg btn-w">REENVIAR CÓDIGO</button>
+      <div class="container pt-3 px-5">
+          <h3>{{tipoUsuario()}}</h3>
+            <p>
+              Por favor, informe o código de 4 digitos enviado para número de celular {{form.telefone}}
+            </p>
+            <div class="form-group text-center pt-2">
+              <validation-observer ref="observer" v-slot="{ handleSubmit }">
+                <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
+
+                  <validation-provider
+                      name="código"
+                      :rules="{ required: true, min: 4, max: 4 }"
+                      v-slot="validationContext">
+
+                      <b-form-group id="codigo-input-group" label="Código" label-for="codigo-input">
+                          <b-form-input
+                          id="codigo-input"
+                          name="codigo-input"
+                          v-model="form.codigo"
+                          :state="getValidationState(validationContext)"
+                          aria-describedby="input-codigo-feedback"
+                          ></b-form-input>
+
+                          <b-form-invalid-feedback id="input-codigo-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                      </b-form-group>
+                  </validation-provider>
+
+                  <b-form-group class="pt-3">
+                      <b-button type="submit" variant="btn btn-dark btn-lg btn-w">CONFIRMAR</b-button>
+                  </b-form-group>
+                  <b-form-group class="pt-2">
+                      <button type="button" @click.prevent="reenviar" class="btn btn-outline-secondary btn-lg btn-w">REENVIAR CÓDIGO</button>
+                  </b-form-group>
+                </b-form>    
+              </validation-observer>
             </div>
-          </div>
-          
-      </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import { mapState } from "vuex";
+import '@/assets/css/main.css'
 import Header from '@/components/Header/Header.vue'
+import { api } from "@/services.js";
 
 export default {
     data() {
         return {
-          confirmar: {
+          form: {
             telefone: '',
             codigo: '',
             idNotificacao: 1
@@ -42,78 +63,68 @@ export default {
     components: {
         Header 
     },
+     computed: {
+      ...mapState(["role", "usuario"])
+    },
     methods: {     
       tipoUsuario() {
-        if (sessionStorage.getItem("tipoUsuario") == 'ROLE_PARCEIROS') {
+        if (this.role == 'ROLE_PARCEIROS') {
             return 'PARCEIROS'
-        } else if (sessionStorage.getItem("tipoUsuario") == 'ROLE_PAIS_RESPONSAVEIS') {
+        } else if (this.role == 'ROLE_PAIS_RESPONSAVEIS') {
             return 'PAIS OU RESPONSÁVEL'
         } else {
             this.$router.push({path: '/'});
         }
       },
-      ativar() {
-        /*axios
-        .post("http://192.168.15.200:8765/usuarios/ativar", this.confirmar)
-        .then((res) => {
-          console.log(res.data);
-          alert('Conta ativada com sucesso')
-        })
-        .catch((error) => {
-            if( error.response ){
-                alert(error.response.data.msg); 
-            } else {
-                alert('Ocorreu um erro inesperado. Tente novamente mais tarde'); 
-            }
-        });*/
-
-        // depois no sucesso fará a chamada
-        this.dadosUsuario('http://192.168.15.200:8765/usuarios/1');
+      getValidationState({ dirty, validated, valid = null }) {
+        return dirty || validated ? valid : null;
       },
-      dadosUsuario(url) {
-        axios
-        .get(url)
-        .then((res) => {console.log(res.data)
-          sessionStorage.setItem("usuario", JSON.stringify(res.data));
-          this.$store.commit('updateUsuario', JSON.parse(sessionStorage.getItem("usuario")));
-          this.$router.push({path: '/home'});
-        })
-        .catch((error) => {
-            if( error.response ){
-                alert(error.response.data.msg); 
-            } else {
-                alert('Ocorreu um erro inesperado. Tente novamente mais tarde'); 
-            }
-        });
+      onSubmit() {
+        this.$loading(true);
+        
+        api.post("/usuarios/ativar", this.form)
+          .then((response) => {
+            this.$store.dispatch("SET_USUARIO", response.data);  
+             this.$fire({text: "Conta ativada com sucesso", type: "success"})     
+            this.$router.push({path: '/home'});
+          })
+          .catch((error) => {
+              let msg = 'Ocorreu um erro inesperado. Tente novamente mais tarde';
+              if(error.response){
+                  msg = error.response.data.msg;
+              }
+
+              this.$fire({text: msg, type: "error" }).then(() => this.$loading(false));
+          });
+                  
       },
       reenviar() {
-        axios
-        .post("http://192.168.15.200:8765/usuarios/reenviar-codigo/" + this.$store.state.usuario.id)
-        .then((res) => {
-          console.log(res.data);
-          alert('Código reenviado com sucesso')
-        })
-        .catch((error) => {
-            if( error.response ){
-                alert(error.response.data.msg); 
-            } else {
-                alert('Ocorreu um erro inesperado. Tente novamente mais tarde'); 
-            }
-        });
+        this.$loading(true);
+
+        api
+          .post("/usuarios/reenviar-codigo/" + this.usuario.id)
+          .then((response) => {
+            this.$store.dispatch("SET_USUARIO", response.data);       
+            this.$fire({text: "Código reenviado com sucesso", type: "success"})
+            .then(() => this.$loading(false));
+          })
+          .catch((error) => {
+              let msg = 'Ocorreu um erro inesperado. Tente novamente mais tarde';
+              if(error.response){
+                  msg = error.response.data.msg;
+              }
+
+              this.$fire({text: msg, type: "error" }).then(() => this.$loading(false));
+          });
       }
     },
     created(){ 
-     console.log(JSON.stringify(this.$store.state.usuario))
-      if (this.$store.state.usuario != '') {
-        sessionStorage.setItem("usuario", JSON.stringify(this.$store.state.usuario));
-      }
-
-      if (sessionStorage.getItem("usuario") == null) {
-        this.$router.push({path: '/'});
-      } else {
-        this.$store.commit('updateUsuario', JSON.parse(sessionStorage.getItem("usuario")));
-      }
-      this.confirmar.telefone = this.$store.state.usuario.telefone;
+       this.$store.dispatch("SET_ROLE", window.localStorage.role);
+       this.$store.dispatch("SET_USUARIO", JSON.parse(window.localStorage.usuario));
+       this.form.telefone = this.usuario.telefone;
+    },
+    mounted() {
+        this.$loading(false);
     }
 }
 </script>

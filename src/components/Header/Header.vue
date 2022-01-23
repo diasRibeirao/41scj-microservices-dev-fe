@@ -9,6 +9,11 @@
             <div class="mx-auto order-0">
                 <h2>{{titulo}}</h2>
             </div>
+            <div class="navbar-brand float-right" v-if="podeSair()">
+                <router-link @click.native="logout" to="/logout">
+                    <span class="bi bi-box-arrow-right"></span>
+                </router-link>
+            </div>
         </div>
     </nav>
 
@@ -25,16 +30,29 @@ export default {
     retorno: {
         type: String,
         default: ''
+    },
+    sair: {
+        type: String,
+        default: ''
     }
   },
   methods: {
     podeVoltar() {
         return this.$props.retorno !== '';
     },
+    podeSair() {
+        return this.$props.sair !== '';
+    },
     voltar() {
         this.$router.push({
             path: this.$props.retorno
         });
+    },
+    logout() {
+        this.$store.dispatch("DESLOGAR_USUARIO")
+        this.$router.push({
+            path: '/'
+        }); 
     }
   }
 }

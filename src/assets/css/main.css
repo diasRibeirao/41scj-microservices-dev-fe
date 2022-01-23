@@ -1,70 +1,69 @@
 * {
-    box-sizing: border-box;
-  }
-  
-  body {
-    background: #FFFFFF !important;
-    min-height: 100vh;
-    display: flex;
-    font-weight: 400;
-  }
-  
-  body,
-  html,
-  .vue-template,
-  .vertical-center,
-  .back-init,
-  .box-init {
-    width: 100%;
-    height: 100%;
-    position: absolute;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+html{
+  z-index: -1;
+} 
+
+body{
+  background-color: #F5F5F5;
+  z-index: 99 !important;
+}
+
+a {
+  color: #363A44;
+  text-decoration: none;
+}
+  a:hover {
+      color: #363A44;
+      opacity: 0.5
   }
 
-  a {
-    color: #363A44;
-    text-decoration: none;
+.container label {
+  text-align: left;
+  font-weight: 600;
+}
+
+.btn-w {
+  width: 260px !important;
+}
+
+.app-container {
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  overflow:hidden;
+}
+  .app-container h3 {
+      text-align: center;
   }
 
-  .vertical-center {
-    text-align: center;
-  }
+.invalid-feedback {    
+  text-align: left;
+}
 
-  .btn-w {
-      min-width: 260px !important;
-  }
 
-  .back-init {    
-    height: 100%;
-    background-image: linear-gradient(180deg, #ffffff 50%, #363A44 50%);
-  }
+.footer {
+  text-align: center;
+  background-color: #363A44;
+  color: #fff;
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:70px;  
+  margin: auto; 
+}
 
-  .box-init {    
-    width: 100%;
-    height: 200px;
-    border: none;
-    -webkit-border-radius: 47% / 50%;
-    border-radius: 47% / 50%;    
-    background: #ffffff;
-    top: calc(50% - 100px);
-  }
 
-  .buttons-init,
-  .buttons-app {
-    margin-top: 50%;
-  }
-  .vertical-center img {
-    text-align: center;
-    margin: 0;
-    line-height: 1;
-    padding-top: 40px;
-  }
-  
-  label {
-    font-weight: 500;
-  }
 
-  .container-init form {
-      text-align: left !important;
-  }
 
- 
