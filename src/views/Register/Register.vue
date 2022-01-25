@@ -47,7 +47,7 @@
 
                   <validation-provider
                       name="e-mail"
-                      :rules="{ required: true,  max: 220 }"
+                      :rules="{ required: true,  max: 220, email: true }"
                       vid="email"
                       v-slot="validationContext">
 
@@ -105,7 +105,6 @@
                   <validation-provider 
                       name="confirmar senha" 
                       :rules="{ required: true, min:6 }" 
-                      vid="confirmarSenha"
                       v-slot="validationContext">
                     <b-form-group id="senha-input-group" label="Confirmar Senha" label-for="confirmar-senha-input">
                         <b-form-input
@@ -174,10 +173,11 @@ export default {
       onSubmit() {
         this.$loading(true);
  
-        api.post("/usuarios", this.form)
+        //api.post("/usuarios", this.form)
+         api.get("/usuarios/1")
           .then((response) => {
             this.$store.dispatch("SET_USUARIO", response.data);       
-            this.$router.push({path: '/confirm-register'});
+            this.$router.push({name: 'confirm-register', params: {retorno: '/register'}});
           })
           .catch((error) => {
               let msg = 'Ocorreu um erro inesperado. Tente novamente mais tarde';

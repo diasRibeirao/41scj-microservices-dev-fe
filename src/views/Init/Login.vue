@@ -105,8 +105,13 @@ export default {
             
             this.$store.dispatch("LOGAR_USUARIO", this.form)
             .then(response => {
-               this.$store.dispatch("SET_USUARIO", response.data);       
-               this.$router.push({name: 'home'});
+               this.$store.dispatch("SET_USUARIO", response.data);  
+               
+               if(response.data.situacao == 1) {
+                   this.$router.push({name: 'confirm-register', params: {retorno: '/login'}});
+               } else {
+                    this.$router.push({name: 'home'});
+               }
             })
             .catch((error) => {
                 let msg = 'Ocorreu um erro inesperado. Tente novamente mais tarde';

@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">  
     <div class="app-container">
-      <Header titulo="Confirmar conta" retorno="/register" />
+      <Header titulo="Confirmar conta" :retorno="retorno" />
 
       <div class="container pt-3 px-5">
           <h3>{{tipoUsuario()}}</h3>
@@ -57,7 +57,8 @@ export default {
             telefone: '',
             codigo: '',
             idNotificacao: 1
-          }
+          },
+          retorno: '/register'
         }
     },
     components: {
@@ -119,6 +120,14 @@ export default {
       }
     },
     created(){ 
+      if(this.$route.params.retorno !== undefined) {
+        window.localStorage.setItem('retorno', this.$route.params.retorno);
+      }
+
+      if (window.localStorage.getItem('retorno') != null) {
+        this.retorno = window.localStorage.getItem('retorno');
+      }
+
        this.$store.dispatch("SET_ROLE", window.localStorage.role);
        this.$store.dispatch("SET_USUARIO", JSON.parse(window.localStorage.usuario));
        this.form.telefone = this.usuario.telefone;
