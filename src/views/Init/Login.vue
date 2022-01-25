@@ -69,6 +69,7 @@
 import { mapState } from "vuex";
 import '@/assets/css/init.css'
 import Logo from '@/components/Init/Logo.vue'
+import { api } from "@/services.js";
 
 export default {
     name: 'Login',
@@ -102,8 +103,8 @@ export default {
         },
         onSubmit() {
             this.$loading(true);
-            
-            this.$store.dispatch("LOGAR_USUARIO", this.form)
+
+            api.post("/usuarios/login", this.form)
             .then(response => {
                this.$store.dispatch("SET_USUARIO", response.data);  
                
