@@ -13,6 +13,7 @@ import pt_BR from 'vee-validate/dist/locale/pt_BR';
 import * as rules from "vee-validate/dist/rules";
 import VueLoading from 'vuejs-loading-plugin'
 import VueSimpleAlert from "vue-simple-alert";
+import VueMask from 'v-mask';
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import "bootstrap-vue/dist/bootstrap-vue.css";
@@ -38,6 +39,7 @@ Vue.use(VueLoading, {
   background: 'rgb(255,255,255)', // set custom background
 })
 Vue.use(VueSimpleAlert);
+Vue.use(VueMask);
 
 Vue.config.productionTip = false
 

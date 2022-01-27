@@ -6,7 +6,7 @@
       <div class="container pt-3 px-5">
           <h3>{{tipoUsuario()}}</h3>
             <p>
-              Por favor, informe o código de 4 digitos enviado para número de celular {{form.telefone}}
+              Por favor, informe o código de 4 digitos enviado para número de celular <span>{{form.telefone | VMask('(##) #####-####') }}</span> 
             </p>
             <div class="form-group text-center pt-2">
               <validation-observer ref="observer" v-slot="{ handleSubmit }">

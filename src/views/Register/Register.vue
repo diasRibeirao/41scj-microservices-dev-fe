@@ -66,7 +66,7 @@
 
                   <validation-provider
                       name="celular"
-                      :rules="{ required: true, min: 10, max: 11 }"
+                      :rules="{ required: true, min: 15, max: 15 }"
                       vid="telefone"
                       v-slot="validationContext">
 
@@ -74,6 +74,7 @@
                           <b-form-input
                           id="telefone-input"
                           name="telefone-input"
+                          v-mask="'(##) #####-####'"
                           v-model="form.telefone"
                           :state="getValidationState(validationContext)"
                           aria-describedby="input-telefone-feedback"
@@ -172,7 +173,6 @@ export default {
       },
       onSubmit() {
         this.$loading(true);
- 
         api.post("/usuarios", this.form)
           .then((response) => {
             this.$store.dispatch("SET_USUARIO", response.data);       

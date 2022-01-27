@@ -11,13 +11,14 @@
 
                   <validation-provider
                       name="Celular"
-                      :rules="{ required: true, min: 10, max: 11 }"
+                      :rules="{ required: true, min: 15, max: 15 }"
                       v-slot="validationContext">
 
-                      <b-form-group id="telefone-input-group" label="Celular (DD + Número)" label-for="telefone-input">
+                      <b-form-group id="telefone-input-group" label="Celular" label-for="telefone-input">
                           <b-form-input
                           id="telefone-input"
                           name="telefone-input"
+                          v-mask="'(##) #####-####'"
                           v-model="form.telefone"
                           :state="getValidationState(validationContext)"
                           aria-describedby="input-telefone-feedback"
