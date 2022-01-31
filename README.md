@@ -23,6 +23,12 @@
 <br />
 
 
+## Como executar o projeto
+##### Alterar o arquivo 41scj-microservices-dev-fe/src/services.js, o valor baseURL deve ser alterado para o ip da máquina que está executando o backend, preferência por ip para poder usar o celular na rede.
+##### npm install
+##### npm run serve
+
+
 
 
 
